@@ -1,0 +1,8 @@
+# OS & IDEs
+.vscode
+
+# Build
+/dist
+
+# Test
+/coverage

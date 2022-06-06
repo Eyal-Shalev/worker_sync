@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "deno.worker"
+    ]
+  },
+  "tasks": {
+    "test": "deno test --quiet --shuffle --reload=file://. --import-map=import_map.json -A --lock=lock.json --coverage=coverage/data",
+    "update-test-lock": "deno test --no-run --reload=file://. --import-map=import_map.json --lock=lock.json --lock-write",
+    "coverage": "deno task --quiet test && deno coverage --exclude=test --unstable --lcov --output=coverage/profile.lcov coverage/data",
+    "coverage-html": "deno task --quiet coverage && genhtml -o=coverage/html coverage/profile.lcov",
+    "clean": "rm -rf coverage dist"
+  }
+}
