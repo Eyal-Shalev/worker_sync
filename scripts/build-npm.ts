@@ -27,7 +27,7 @@ Usage:
 Options:
   -h --help              Show this screen.
   --[no-]test            Should the tests run after building for NPM.
-  --compile-target=<ct>  Compilation Target [default: Latest].
+  --compile-target=<ct>  Compilation Target.
 `);
 
   if (!version) {
@@ -94,8 +94,11 @@ Options:
     },
     importMap: relative(Deno.cwd(), join(rootDir, "import_map.json")),
     compilerOptions: {
-      lib: ["webworker", String(compile_target).toLowerCase() as LibName],
-      target: String(compile_target) as ScriptTarget,
+      lib: [
+        "webworker",
+        String(compile_target ?? "esnext").toLowerCase() as LibName,
+      ],
+      target: String(compile_target ?? "Latest") as ScriptTarget,
     },
     typeCheck: false,
     test: !!test || !no_test,

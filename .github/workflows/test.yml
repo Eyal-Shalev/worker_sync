@@ -82,5 +82,6 @@ jobs:
           registry-url: ${{ matrix.registry-url }}
           dist: dist-${{ matrix.registry }}
           node-version: ${{ matrix.node-version }}
+          compile-target: ${{ matrix.compile-target }}
 
 
