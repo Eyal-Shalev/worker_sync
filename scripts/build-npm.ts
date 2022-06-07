@@ -27,8 +27,11 @@ Usage:
 Options:
   -h --help              Show this screen.
   --[no-]test            Should the tests run after building for NPM.
-  --compile-target=<ct>  Compilation Target.
+  --compile-target=<ct>  Compilation Target [default: Latest].
 `);
+
+  const lib = ({ Latest: "esnext" })[String(compile_target)] ??
+    String(compile_target).toLowerCase();
 
   if (!version) {
     throw new TypeError(`VERSION environment variable is missing`);
@@ -94,10 +97,7 @@ Options:
     },
     importMap: relative(Deno.cwd(), join(rootDir, "import_map.json")),
     compilerOptions: {
-      lib: [
-        "webworker",
-        String(compile_target ?? "esnext").toLowerCase() as LibName,
-      ],
+      lib: ["webworker", lib as LibName],
       target: String(compile_target ?? "Latest") as ScriptTarget,
     },
     typeCheck: false,
