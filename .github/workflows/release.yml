@@ -34,6 +34,7 @@ jobs:
           dist: dist-${{ matrix.format }}
 
   build-npm:
+    needs: [version]
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -55,6 +56,7 @@ jobs:
           scope: ${{ matrix.scope }}
           registry-url: ${{ matrix.registry-url }}
           dist: dist-${{ matrix.registry }}
+          version: ${{ needs.version.outputs.version }}
 
   publish:
     name: Publish
