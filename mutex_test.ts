@@ -1,6 +1,7 @@
 import { assertEquals } from "deno/testing/asserts.ts";
 import { Mutex } from "./mutext.ts";
 import { sleep } from "./internal/sleep.ts";
+import { isDeno } from "which_runtime";
 import "./testdata/mutex_worker.ts";
 import "./testdata/hammer_mutex_worker.ts";
 
@@ -11,7 +12,10 @@ Deno.test(async function counter() {
   const m = Mutex.create();
 
   const w = new Worker(
-    new URL("testdata/mutex_worker.ts", import.meta.url),
+    new URL(
+      isDeno ? "testdata/mutex_worker.ts" : "testdata/mutex_worker.js",
+      import.meta.url,
+    ),
     { type: "module" },
   );
   const p = new Promise<void>((res, rej) => {
@@ -28,7 +32,7 @@ Deno.test(async function counter() {
 
   m.unlock();
 
-  await sleep(10); // Give the worker time to take the lock.
+  await sleep(isDeno ? 10 : 200); // Give the worker time to take the lock.
   await m.lock();
   assertEquals(Atomics.compareExchange(counter, 0, 2, 3), 2);
   m.unlock();
@@ -45,7 +49,12 @@ Deno.test(async function hammerMutex() {
     Array(n).fill(void 0).map((_, i) =>
       new Promise<void>((res, rej) => {
         const w = new Worker(
-          new URL("testdata/hammer_mutex_worker.ts", import.meta.url),
+          new URL(
+            isDeno
+              ? "testdata/hammer_mutex_worker.ts"
+              : "testdata/hammer_mutex_worker.js",
+            import.meta.url,
+          ),
           { type: "module", name: i.toString() },
         );
         w.onmessage = (ev) => {

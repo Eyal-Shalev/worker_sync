@@ -1,5 +1,10 @@
 {
   "imports": {
-    "deno/": "https://deno.land/std@0.141.0/"
+    "deno/": "https://deno.land/std@0.141.0/",
+    "dnt": "https://deno.land/x/dnt@0.25.2/mod.ts",
+    "semver": "https://deno.land/x/semver@v1.4.0/mod.ts",
+    "docopt/": "https://deno.land/x/docopt@v1.0.7/",
+    "docopt": "https://deno.land/x/docopt@v1.0.7/mod.ts",
+    "which_runtime": "https://deno.land/x/which_runtime@0.2.0/mod.ts"
   }
 }

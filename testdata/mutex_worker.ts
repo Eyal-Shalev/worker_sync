@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "deno/testing/asserts.ts";
 import { Mutex } from "../mutext.ts";
 
-self.onmessage = async (ev) => {
+globalThis.onmessage = async (ev) => {
   try {
     assert(ev.data && Array.isArray(ev.data) && ev.data.length === 2);
     const [semData, counter] = ev.data;
@@ -10,8 +10,8 @@ self.onmessage = async (ev) => {
     await m.lock();
     assertEquals(Atomics.compareExchange(counter, 0, 1, 2), 1);
     m.unlock();
-    self.postMessage(void 0);
+    globalThis.postMessage(void 0);
   } catch (err) {
-    self.postMessage(err);
+    globalThis.postMessage(err);
   }
 };

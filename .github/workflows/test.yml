@@ -35,3 +35,42 @@ jobs:
           directory: ./coverage
           fail_ci_if_error: true
           verbose: true
+
+  bundle:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        format: [iife, esm]
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - uses: ./.github/bundle
+        with:
+          format: ${{ matrix.format }}
+          dist: dist-${{ matrix.format }}
+
+  build-npm:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        registry: [npmjs, github]
+        include:
+          - registry: npmjs
+            scope: "eyalsh"
+            registry-url: https://registry.npmjs.org
+          - registry: github
+            scope: "Eyal-Shalev"
+            registry-url: 'https://npm.pkg.github.com'
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - uses: ./.github/build-npm
+        with:
+          scope: ${{ matrix.scope }}
+          registry-url: ${{ matrix.registry-url }}
+          dist: dist-${{ matrix.registry }}
+
+

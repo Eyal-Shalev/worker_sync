@@ -1,0 +1,102 @@
+name: Test
+
+on:
+  push:
+    tags: [v*]
+
+jobs:
+
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Version
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF/refs\/tags\/v/}
+      - name: Is pre-release
+        id: is_pre
+        run: echo ::set-output name=IS_PRE::"$([[ ${{steps.version.outputs.version}} =~ .+-.+ ]] && echo 0 || echo 1)"
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_pre: ${{ steps.is_pre.outputs.IS_PRE }}
+
+  bundle:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        format: [iife, esm]
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - uses: ./.github/bundle
+        with:
+          format: ${{ matrix.format }}
+          dist: dist-${{ matrix.format }}
+
+  build-npm:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        registry: [npmjs, github]
+        include:
+          - registry: npmjs
+            scope: "eyalsh"
+            registry-url: https://registry.npmjs.org
+          - registry: github
+            scope: "Eyal-Shalev"
+            registry-url: 'https://npm.pkg.github.com'
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - uses: ./.github/build-npm
+        with:
+          scope: ${{ matrix.scope }}
+          registry-url: ${{ matrix.registry-url }}
+          dist: dist-${{ matrix.registry }}
+
+  publish:
+    name: Publish
+    needs: [build-npm, version]
+    strategy:
+      matrix:
+        registry: [npmjs, github]
+        include:
+          - registry: npmjs
+            registry-url: https://registry.npmjs.org
+          - registry: github
+            registry-url: 'https://npm.pkg.github.com'
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist-${{ matrix.registry }}
+          path: dist
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: ${{ matrix.registry-url }}
+
+      - run: npm publish
+        name: publish - npmjs
+        if: ${{ matrix.registry == 'npmjs' }}
+        working-directory: dist/npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - run: npm publish
+        name: publish - github
+        if: ${{ matrix.registry == 'github' }}
+        working-directory: dist/npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

@@ -1,0 +1,39 @@
+name: Bundle
+description: Bundle the project release.
+
+inputs:
+  format:
+    description: iife / esm
+    required: true
+  dist:
+    description: The artifact name for the build output.
+    required: false
+    default: dist-bundle
+
+runs:
+  using: composite
+  steps:
+    - name: Git Checkout
+      uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 16
+
+    - name: Setup Deno
+      uses: denoland/setup-deno@v1
+      with:
+        deno-version: v1.x
+
+    - name: Install ESBuild
+      shell: bash
+      run: npm i -g esbuild
+
+    - name: Bundle
+      shell: bash
+      run: deno task bundle-${{ inputs.format }}
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.dist }}
+        path: dist
