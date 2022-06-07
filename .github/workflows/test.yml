@@ -63,6 +63,14 @@ jobs:
           - registry: github
             scope: "Eyal-Shalev"
             registry-url: 'https://npm.pkg.github.com'
+          - node-version: 12
+            compile-target: ES2019
+          - node-version: 14
+            compile-target: ES2020
+          - node-version: 16
+            compile-target: ES2021
+          - node-version: 18
+            compile-target: ES2022
 
     steps:
       - name: Git Checkout

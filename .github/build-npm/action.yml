@@ -24,6 +24,10 @@ inputs:
     description: NodeJS version
     required: false
     default: latest
+  compile-target:
+    description: Compilation Target
+    required: false
+    default: Latest
 
 runs:
   using: composite
@@ -40,7 +44,7 @@ runs:
 
     - name: Build
       shell: bash
-      run: deno task build-npm ${{ inputs.version }} ${{ inputs.scope }} ${{ fromJSON(inputs.test) && '--test' || '--no-test' }}
+      run: deno task build-npm ${{ inputs.version }} ${{ inputs.scope }} ${{ fromJSON(inputs.test) && '--test' || '--no-test' }} --compile-target=${{ inputs.compile-target }}
 
     - uses: actions/upload-artifact@v2
       with:

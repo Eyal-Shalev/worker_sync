@@ -1,4 +1,5 @@
-import { build, emptyDir } from "dnt";
+import { build, emptyDir, LibName } from "dnt";
+import { ScriptTarget } from "dnt/lib/types.ts";
 import { Exit } from "docopt/src/error.ts";
 import docopt from "docopt";
 import {
@@ -15,16 +16,18 @@ try {
     "<scope>": scope,
     "--test": test,
     "--no-test": no_test,
+    "--compile-target": compile_target,
   } = docopt(`
 Build NPM.
 
 Usage:
-  build-npm <version> <scope> [--test|--no-test]
+  build-npm <version> <scope> [--test|--no-test] [--compile-target=<ct>]
   build-npm -h | --help
 
 Options:
-  -h --help     Show this screen.
-  --[no-]test   Should the tests run after building for NPM.
+  -h --help              Show this screen.
+  --[no-]test            Should the tests run after building for NPM.
+  --compile-target=<ct>  Compilation Target [default: Latest].
 `);
 
   if (!version) {
@@ -91,7 +94,8 @@ Options:
     },
     importMap: relative(Deno.cwd(), join(rootDir, "import_map.json")),
     compilerOptions: {
-      lib: ["webworker", "esnext"],
+      lib: ["webworker", String(compile_target).toLowerCase() as LibName],
+      target: String(compile_target).toUpperCase() as ScriptTarget,
     },
     typeCheck: false,
     test: !!test || !no_test,
