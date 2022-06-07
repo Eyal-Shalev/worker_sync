@@ -73,6 +73,10 @@ Options:
           },
         },
         {
+          globalNames: ["performance"],
+          module: "perf_hooks",
+        },
+        {
           module: "./shims/navigator.ts",
           globalNames: ["navigator"],
         },
@@ -93,6 +97,9 @@ Options:
       repository: {
         type: "git",
         url: `git+https://github.com/Eyal-Shalev/${name}.git`,
+      },
+      engines: {
+        "node": ">=14",
       },
     },
     importMap: relative(Deno.cwd(), join(rootDir, "import_map.json")),

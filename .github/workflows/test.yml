@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [12, 14, 16, 18]
+        node-version: [14, 16, 18]
         registry: [npmjs, github]
         include:
           - registry: npmjs
@@ -64,8 +64,6 @@ jobs:
           - registry: github
             scope: "Eyal-Shalev"
             registry-url: 'https://npm.pkg.github.com'
-          - node-version: 12
-            compile-target: ES2019
           - node-version: 14
             compile-target: ES2020
           - node-version: 16
