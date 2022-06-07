@@ -128,7 +128,7 @@ jobs:
           files: |
             LICENSE
             README.md
-            dist-esm/async_channels.esm.js
-            dist-esm/async_channels.esm.min.js
-            dist-iife/async_channels.iife.js
-            dist-iife/async_channels.iife.min.js
+            dist-esm/worker_sync.esm.js
+            dist-esm/worker_sync.esm.min.js
+            dist-iife/worker_sync.iife.js
+            dist-iife/worker_sync.iife.min.js
