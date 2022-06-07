@@ -71,7 +71,7 @@ jobs:
           - node-version: 16
             compile-target: ES2021
           - node-version: 18
-            compile-target: ES2022
+            compile-target: Latest
 
     steps:
       - name: Git Checkout
