@@ -89,14 +89,46 @@ jobs:
       - run: npm publish
         name: publish - npmjs
         if: ${{ matrix.registry == 'npmjs' }}
-        working-directory: dist/npm
+        working-directory: dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - run: npm publish
         name: publish - github
         if: ${{ matrix.registry == 'github' }}
-        working-directory: dist/npm
+        working-directory: dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [bundle, version]
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist-esm
+          path: dist-esm
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist-iife
+          path: dist-iife
+
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          draft: true
+          prerelease: ${{ needs.version.outputs.is_pre }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          title: Version ${{ needs.version.outputs.version }}
+          files: |
+            LICENSE
+            README.md
+            dist-esm/async_channels.esm.js
+            dist-esm/async_channels.esm.min.js
+            dist-iife/async_channels.iife.js
+            dist-iife/async_channels.iife.min.js
