@@ -52,8 +52,8 @@ jobs:
 
   build-npm:
     runs-on: ubuntu-latest
-    if: always()
     strategy:
+      fail-fast: false
       matrix:
         node-version: [12, 14, 16, 18]
         registry: [npmjs, github]
