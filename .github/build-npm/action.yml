@@ -20,13 +20,17 @@ inputs:
     description: Run tests after building for NPM.
     required: false
     default: "true"
+  node-version:
+    description: NodeJS version
+    required: false
+    default: latest
 
 runs:
   using: composite
   steps:
     - uses: actions/setup-node@v2
       with:
-        node-version: 16
+        node-version: ${{ inputs.node-version }}
         registry-url: ${{ inputs.registry-url }}
 
     - name: Setup Deno
