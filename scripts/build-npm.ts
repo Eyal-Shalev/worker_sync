@@ -95,7 +95,7 @@ Options:
     importMap: relative(Deno.cwd(), join(rootDir, "import_map.json")),
     compilerOptions: {
       lib: ["webworker", String(compile_target).toLowerCase() as LibName],
-      target: String(compile_target).toUpperCase() as ScriptTarget,
+      target: String(compile_target) as ScriptTarget,
     },
     typeCheck: false,
     test: !!test || !no_test,
