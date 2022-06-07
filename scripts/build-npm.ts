@@ -13,15 +13,18 @@ try {
   const {
     "<version>": version,
     "<scope>": scope,
+    "--test": test,
+    "--no-test": no_test,
   } = docopt(`
 Build NPM.
 
 Usage:
-  build-npm <version> <scope>
+  build-npm <version> <scope> [--test|--no-test]
   build-npm -h | --help
 
 Options:
   -h --help     Show this screen.
+  --[no-]test   Should the tests run after building for NPM.
 `);
 
   if (!version) {
@@ -91,6 +94,7 @@ Options:
       lib: ["webworker", "esnext"],
     },
     typeCheck: false,
+    test: !!test || !no_test,
   });
 
   // post build steps
