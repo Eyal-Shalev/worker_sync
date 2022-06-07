@@ -52,6 +52,7 @@ jobs:
 
   build-npm:
     runs-on: ubuntu-latest
+    if: always()
     strategy:
       matrix:
         node-version: [12, 14, 16, 18]
